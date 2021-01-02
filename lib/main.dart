@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:productuvity_timer/settings.dart';
 
+import 'settings.dart';
 import 'timer.dart';
 import 'timermodel.dart';
 import 'widgets.dart';
@@ -27,9 +29,28 @@ class TimerHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     timer.startWork();
+    final List<PopupMenuItem<String>> menuItems = [];
+
+    menuItems.add(PopupMenuItem(
+      value: 'Settings',
+      child: Text('Settings'),
+    ));
+
     return Scaffold(
         appBar: AppBar(
           title: Text('My Work Timer'),
+          actions: [
+            PopupMenuButton<String>(
+              itemBuilder: (BuildContext context) {
+                return menuItems.toList();
+              },
+              onSelected: (s) {
+                if (s == 'Settings') {
+                  goToSettings(context);
+                }
+              },
+            ),
+          ],
         ),
         body: LayoutBuilder(
           builder: (BuildContext context, BoxConstraints constraints) {
@@ -58,31 +79,29 @@ class TimerHomePage extends StatelessWidget {
                     child: ProductivityButton(
                       color: Color(0xff455A64),
                       text: 'Long Break',
-                      onPressed: () =>  timer.startBreak(false),
+                      onPressed: () => timer.startBreak(false),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(defaultPadding)),
                 ],
               ),
-              Expanded(
-                child: StreamBuilder(
-                    initialData: '00:00',
-                    stream: timer.stream(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      TimerModel timer = (snapshot.data == '00:00')
-                          ? TimerModel('00:00', 1)
-                          : snapshot.data;
-                      return (Expanded(
-                          child: CircularPercentIndicator(
-                        radius: availableWidth / 2,
-                        lineWidth: 10,
-                        percent: timer.percent,
-                        center: Text(timer.time + ':00',
-                            style: Theme.of(context).textTheme.headline4),
-                        progressColor: Color(0xff009688),
-                      )));
-                    }),
-              ),
+              StreamBuilder(
+                  initialData: '00:00',
+                  stream: timer.stream(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    TimerModel timer = (snapshot.data == '00:00')
+                        ? TimerModel('00:00', 1)
+                        : snapshot.data;
+                    return (Expanded(
+                        child: CircularPercentIndicator(
+                      radius: availableWidth / 2,
+                      lineWidth: 10,
+                      percent: timer.percent,
+                      center: Text(timer.time + ':00',
+                          style: Theme.of(context).textTheme.headline4),
+                      progressColor: Color(0xff009688),
+                    )));
+                  }),
               Row(
                 children: [
                   Padding(padding: EdgeInsets.all(defaultPadding)),
@@ -109,5 +128,8 @@ class TimerHomePage extends StatelessWidget {
         ));
   }
 
-  void emptyMethod() {}
+  void goToSettings(BuildContext context) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+  }
 }
