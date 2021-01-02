@@ -85,25 +85,23 @@ class TimerHomePage extends StatelessWidget {
                   Padding(padding: EdgeInsets.all(defaultPadding)),
                 ],
               ),
-              Expanded(
-                child: StreamBuilder(
-                    initialData: '00:00',
-                    stream: timer.stream(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      TimerModel timer = (snapshot.data == '00:00')
-                          ? TimerModel('00:00', 1)
-                          : snapshot.data;
-                      return (Expanded(
-                          child: CircularPercentIndicator(
-                        radius: availableWidth / 2,
-                        lineWidth: 10,
-                        percent: timer.percent,
-                        center: Text(timer.time + ':00',
-                            style: Theme.of(context).textTheme.headline4),
-                        progressColor: Color(0xff009688),
-                      )));
-                    }),
-              ),
+              StreamBuilder(
+                  initialData: '00:00',
+                  stream: timer.stream(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    TimerModel timer = (snapshot.data == '00:00')
+                        ? TimerModel('00:00', 1)
+                        : snapshot.data;
+                    return (Expanded(
+                        child: CircularPercentIndicator(
+                      radius: availableWidth / 2,
+                      lineWidth: 10,
+                      percent: timer.percent,
+                      center: Text(timer.time + ':00',
+                          style: Theme.of(context).textTheme.headline4),
+                      progressColor: Color(0xff009688),
+                    )));
+                  }),
               Row(
                 children: [
                   Padding(padding: EdgeInsets.all(defaultPadding)),
